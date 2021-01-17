@@ -45,3 +45,53 @@ public interface IChessBot
 }
 ```
 
+So, writing a simple bot is extremely easy. Let's have look at a bot playing random legal moves:
+
+```c#
+public class RandomBot : IChessBot
+{
+  private readonly IGame game;
+  private readonly Random random;
+
+  public RandomBot(IGame game)
+  {
+    this.game = game;
+    random = new Random();
+  }
+  
+  public IMove MakeMove()
+  {
+    IMove[] moves = game.Board.LegalMoves.ToArray();
+    return moves[random.Next(moves.Length)];
+  }
+}
+
+public class Program
+{
+    public static void main(string[] args)
+    {
+      IChess chess = new Chess();
+      IGame botGame = chess.CreateGame("Bot Showdown");
+      IChessBot white = new RandomBot(botGame);
+      IChessBot black = new RandomBot(botGame);
+        
+      while(true)
+      {
+        // White's move
+        IMove whiteMove = white.MakeMove();
+        botGame.Move(whiteMove);
+        if(botGame.IsCheckMate)
+          break;
+          
+        // Black's move
+        IMove blackMove = black.MakeMove();
+        botGame.Move(whiteMove);
+        if(botGame.IsCheckMate)
+          break;  
+      }
+      
+      Console.WriteLine($"{game.Turn} has lost");
+    }
+}
+```
+
