@@ -45,6 +45,54 @@ namespace ChessDotCore.Engine
       LegalKingMoves = new List<IMove>();
     }
 
+    private string GetFen()
+    {
+      if (fen == null)
+      {
+        List<string> fenParts = new List<string>();
+        List<string> boardParts = new List<string>();
+        StringBuilder sb;
+        for (int i = 8 - 1; i >= 0; i--)
+        {
+          sb = new StringBuilder();
+          byte currentFreeSpace = 0;
+          for (int j = 0; j < 8; j++)
+          {
+            IPiece piece = this[i, j].Piece;
+            if (piece != null)
+            {
+              if (currentFreeSpace > 0)
+              {
+                sb.Append(currentFreeSpace);
+                currentFreeSpace = 0;
+              }
+              sb.Append(piece.PieceChar);
+            }
+            else
+            {
+              currentFreeSpace++;
+            }
+          }
+          if (currentFreeSpace > 0) sb.Append(currentFreeSpace);
+          boardParts.Add(sb.ToString());
+        }
+        fenParts.Add(string.Join("/", boardParts));
+        fenParts.Add(Turn == Color.White ? "w" : "b");
+        sb = new StringBuilder();
+        if (CanWhiteKingSideCastle) sb.Append("K");
+        if (CanWhiteQueenSideCastle) sb.Append("Q");
+        if (CanBlackKingSideCastle) sb.Append("k");
+        if (CanBlackQueenSideCastle) sb.Append("q");
+        fenParts.Add(sb.ToString());
+        if (EnPassantSquare != null) fenParts.Add($"{(char)(EnPassantSquare.File + 97)}{EnPassantSquare.Rank + 1}");
+        else fenParts.Add("-");
+        fenParts.Add($"{HalfTurnsSincePawnMovementOrCapture}");
+        fenParts.Add($"{TurnNumber}");
+        fen = string.Join(" ", fenParts);
+      }
+      return fen;
+    }
+
     public IPiece BlackKing { get; }
 
     public bool CanBlackKingSideCastle { get; }
@@ -59,6 +107,7 @@ namespace ChessDotCore.Engine
 
     public string Fen => GetFen();
 
+    public GameState GameState { get; internal set; }
     public int HalfTurnsSincePawnMovementOrCapture { get; }
 
     public bool IsCheck { get; }
@@ -71,8 +120,14 @@ namespace ChessDotCore.Engine
 
     public IMove LastMove { get; }
 
-    public List<IMove> LegalMoves { get; set; }
+    public List<IMove> LegalBishopMoves { get; }
+    public List<IMove> LegalKingMoves { get; }
+    public List<IMove> LegalKnightMoves { get; }
+    public List<IMove> LegalMoves { get; internal set; }
 
+    public List<IMove> LegalPawnMoves { get; }
+    public List<IMove> LegalQueenMoves { get; }
+    public List<IMove> LegalRookMoves { get; }
     public List<IPiece> Pieces { get; }
 
     public Color Turn { get; }
@@ -80,20 +135,6 @@ namespace ChessDotCore.Engine
     public int TurnNumber { get; }
 
     public IPiece WhiteKing { get; }
-
-    public List<IMove> LegalPawnMoves { get; }
-
-    public List<IMove> LegalBishopMoves { get; }
-
-    public List<IMove> LegalKnightMoves { get; }
-
-    public List<IMove> LegalRookMoves { get; }
-
-    public List<IMove> LegalQueenMoves { get; }
-
-    public List<IMove> LegalKingMoves { get; }
-
-    public GameState GameState { get; internal set; }
     internal List<IPiece> AliveBlackPiecesList { get; set; }
 
     internal List<IPiece> AlivePiecesList { get; set; }
@@ -208,54 +249,6 @@ namespace ChessDotCore.Engine
       {
         return alive ? AlivePiecesList : DeadPiecesList;
       }
-    }
-
-    private string GetFen()
-    {
-      if (fen == null)
-      {
-        List<string> fenParts = new List<string>();
-        List<string> boardParts = new List<string>();
-        StringBuilder sb;
-        for (int i = 8 - 1; i >= 0; i--)
-        {
-          sb = new StringBuilder();
-          byte currentFreeSpace = 0;
-          for (int j = 0; j < 8; j++)
-          {
-            IPiece piece = this[i, j].Piece;
-            if (piece != null)
-            {
-              if (currentFreeSpace > 0)
-              {
-                sb.Append(currentFreeSpace);
-                currentFreeSpace = 0;
-              }
-              sb.Append(piece.PieceChar);
-            }
-            else
-            {
-              currentFreeSpace++;
-            }
-          }
-          if (currentFreeSpace > 0) sb.Append(currentFreeSpace);
-          boardParts.Add(sb.ToString());
-        }
-        fenParts.Add(string.Join("/", boardParts));
-        fenParts.Add(Turn == Color.White ? "w" : "b");
-        sb = new StringBuilder();
-        if (CanWhiteKingSideCastle) sb.Append("K");
-        if (CanWhiteQueenSideCastle) sb.Append("Q");
-        if (CanBlackKingSideCastle) sb.Append("k");
-        if (CanBlackQueenSideCastle) sb.Append("q");
-        fenParts.Add(sb.ToString());
-        if (EnPassantSquare != null) fenParts.Add($"{(char)(EnPassantSquare.File + 97)}{EnPassantSquare.Rank + 1}");
-        else fenParts.Add("-");
-        fenParts.Add($"{HalfTurnsSincePawnMovementOrCapture}");
-        fenParts.Add($"{TurnNumber}");
-        fen = string.Join(" ", fenParts);
-      }
-      return fen;
     }
 
     #region Alive Pieces

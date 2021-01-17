@@ -1245,6 +1245,15 @@ namespace ChessDotCore.Engine.Utilities
       foreach (IMove move in toBeRemovedMoves)
       {
         pseudoLegalMoves.Remove(move);
+        switch (move.MovingPiece.PieceType)
+        {
+          case PieceType.Pawn: board.LegalPawnMoves.Remove(move); break;
+          case PieceType.Bishop: board.LegalBishopMoves.Remove(move); break;
+          case PieceType.Knight: board.LegalKnightMoves.Remove(move); break;
+          case PieceType.Rook: board.LegalRookMoves.Remove(move); break;
+          case PieceType.Queen: board.LegalQueenMoves.Remove(move); break;
+          case PieceType.King: board.LegalKingMoves.Remove(move); break;
+        }
       }
     }
   }
