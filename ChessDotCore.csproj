@@ -2,12 +2,39 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <Authors>Julius Freiny</Authors>
+    <PackageId>ChessDotCore.Engine</PackageId>
+    <Description>A highly optimized and specifically for bots designed chess engine for .NET Core</Description>
+    <PackageTags>ChessDotCore, .Net Core, Chess, Chess Engine, ChessEngine, Chess Bot, ChessBot</PackageTags>
+    <PackageReleaseNotes>The first released version. For bug reports and other requests please head to the project site.</PackageReleaseNotes>
+    <NeutralLanguage>en-DE</NeutralLanguage>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/PanCave/ChessDotCore</RepositoryUrl>
+    <PackageIcon>Chess.png</PackageIcon>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="Engine.Tests\**" />
     <EmbeddedResource Remove="Engine.Tests\**" />
     <None Remove="Engine.Tests\**" />
+    <None Include="..\Chess.png">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitignore" />
+    <None Remove="LICENSE" />
+    <None Remove="README.md" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="..\Chess.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

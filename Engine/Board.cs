@@ -22,7 +22,8 @@ namespace ChessDotCore.Engine
         int turnNumber,
         List<IPiece> pieces,
         bool isCheck,
-        ISquare[,] squares)
+        ISquare[,] squares,
+        string[] moveHistory)
     {
       CanBlackKingSideCastle = canBlackKingSideCastle;
       CanBlackQueenSideCastle = canBlackQueenSideCastle;
@@ -37,6 +38,7 @@ namespace ChessDotCore.Engine
       Pieces = pieces;
       IsCheck = isCheck;
       this.squares = squares;
+      MoveHistory = moveHistory;
       LegalPawnMoves = new List<IMove>();
       LegalBishopMoves = new List<IMove>();
       LegalKnightMoves = new List<IMove>();
@@ -293,6 +295,7 @@ namespace ChessDotCore.Engine
 
     #region Black PieceType Lists
 
+    public string[] MoveHistory { get; }
     internal List<IPiece> BlackBishopList { get; set; }
     internal List<IPiece> BlackKnightList { get; set; }
     internal List<IPiece> BlackPawnList { get; set; }
