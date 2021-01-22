@@ -29,11 +29,6 @@ namespace ChessDotCore.Engine
       GameInformation = new GameInformation(@event, site, date, round, white, black);
     }
 
-    public IBoard Board { get; private set; }
-
-    public string Name { get; }
-    public IGameInformation GameInformation { get; }
-
     public IGame Clone()
     {
       IGame game = new Game(Name);
@@ -57,6 +52,11 @@ namespace ChessDotCore.Engine
 
           bool nextIsCheck = engineUtilities.IsCheck(Board, nextTurn);
 
+          int len = Board.MoveHistory.Length;
+          string[] nextMoveHistory = new string[len + 1];
+          Array.Copy(Board.MoveHistory, nextMoveHistory, len);
+          nextMoveHistory[len] = move.ToString();
+
           Board board = new Board(
               nextCanWhiteKingSideCastle,
               nextCanWhiteQueenSideCastle,
@@ -70,7 +70,8 @@ namespace ChessDotCore.Engine
               (nextTurn == Color.White) ? Board.TurnNumber + 1 : Board.TurnNumber,
               Board.Pieces,
               nextIsCheck,
-              squares);
+              squares,
+              nextMoveHistory);
           SetPiecesLists(board);
           List<IMove> legalMoves = engineUtilities.GetLegalMoves(board);
           board.LegalMoves = legalMoves;
@@ -101,7 +102,8 @@ namespace ChessDotCore.Engine
               Board.TurnNumber,
               Board.Pieces,
               nextIsCheck,
-              squares);
+              squares,
+              Array.Empty<string>());
           SetPiecesLists(board);
           board.LegalMoves = nextIsCheck ? engineUtilities.GetLegalMoves(board) : null;
           board.IsCheckMate = nextIsCheck && board.LegalMoves.Count == 0;
@@ -244,7 +246,8 @@ namespace ChessDotCore.Engine
         copyBoard.TurnNumber,
         Board.Pieces,
         copyBoard.IsCheck,
-        squares);
+        squares,
+        (string[])copyBoard.MoveHistory.Clone());
 
       foreach (IPiece piece in Board.Pieces)
       {
@@ -286,7 +289,7 @@ namespace ChessDotCore.Engine
           null,
           null,
           Color.White,
-          1, pieces, false, squares)
+          1, pieces, false, squares, Array.Empty<string>())
       {
         IsCheckMate = false
       };
@@ -350,6 +353,11 @@ namespace ChessDotCore.Engine
       board.BlackRookList = b.BlackRookList;
     }
 
+    public IBoard Board { get; private set; }
+
+    public IGameInformation GameInformation { get; }
+    public string Name { get; }
+
     private class Square : ISquare
     {
       public Square(int rank, int file)
@@ -358,14 +366,6 @@ namespace ChessDotCore.Engine
         File = file;
         Piece = null;
       }
-
-      public int File { get; }
-
-      public IPiece Piece { get; set; }
-
-      public int Rank { get; }
-
-      public string UciCode => $"{(char)(65 + File)}{Rank + 1}";
 
       public override string ToString()
       {
@@ -383,6 +383,14 @@ namespace ChessDotCore.Engine
         }
         return $"{(char)(65 + File)}{Rank + 1} [{colorString}]{pieceString}";
       }
+
+      public int File { get; }
+
+      public IPiece Piece { get; set; }
+
+      public int Rank { get; }
+
+      public string UciCode => $"{(char)(65 + File)}{Rank + 1}";
     }
   }
 }

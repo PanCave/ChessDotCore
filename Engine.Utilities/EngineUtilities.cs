@@ -268,6 +268,8 @@ namespace ChessDotCore.Engine.Utilities
 
         enPassantMove.MovingPiece.Square = enPassantMove.FromSquare;
         enPassantMove.CapturedPiece.Square = enPassantMove.CapturedPieceSquare;
+
+        MovePieceFromDeadToAlive(enPassantMove.CapturedPiece, board);
       }
       else if (move is PromotionMove promotionMove)
       {
@@ -286,6 +288,9 @@ namespace ChessDotCore.Engine.Utilities
         capturingPromotionMove.CapturedPiece.Square = capturingPromotionMove.ToSquare;
 
         (capturingPromotionMove.MovingPiece as Piece).PieceType = PieceType.Pawn;
+
+        MovePieceFromDeadToAlive(capturingPromotionMove.CapturedPiece, board);
+        MovePieceFromOtherToPawn(capturingPromotionMove.MovingPiece, capturingPromotionMove.PromotedToPieceType, board);
       }
       else
       {
@@ -788,7 +793,7 @@ namespace ChessDotCore.Engine.Utilities
           break;
 
         case PieceType.Knight:
-          IEnumerable<IMove> knightMoves = GetPseudoLegalKingLikeMoves(piece, board);
+          IEnumerable<IMove> knightMoves = GetPseudoLegalKnightLikeMoves(piece, board);
           moves.AddRange(knightMoves);
           board.LegalKnightMoves.AddRange(knightMoves);
           break;
@@ -936,6 +941,9 @@ namespace ChessDotCore.Engine.Utilities
         capturingPromotionMove.CapturedPiece.Square = null;
 
         (capturingPromotionMove.MovingPiece as Piece).PieceType = capturingPromotionMove.PromotedToPieceType;
+
+        MovePieceFromAliveToDead(capturingPromotionMove.CapturedPiece, board);
+        MovePieceFromPawnToOther(capturingPromotionMove.MovingPiece, capturingPromotionMove.PromotedToPieceType, board);
       }
       else
       {

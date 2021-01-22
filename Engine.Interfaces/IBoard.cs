@@ -11,6 +11,7 @@ namespace ChessDotCore.Engine.Interfaces
     bool CanWhiteQueenSideCastle { get; }
     ISquare EnPassantSquare { get; }
     string Fen { get; }
+    GameState GameState { get; }
     int HalfTurnsSincePawnMovementOrCapture { get; }
     bool IsCheck { get; }
     bool IsCheckMate { get; }
@@ -23,11 +24,11 @@ namespace ChessDotCore.Engine.Interfaces
     List<IMove> LegalPawnMoves { get; }
     List<IMove> LegalQueenMoves { get; }
     List<IMove> LegalRookMoves { get; }
+    string[] MoveHistory { get; }
     List<IPiece> Pieces { get; }
     Color Turn { get; }
     int TurnNumber { get; }
     IPiece WhiteKing { get; }
-    GameState GameState { get; }
     ISquare this[int rank, int file] { get; }
     List<IPiece> this[PieceType pieceType, Color color, bool alive] { get; }
     List<IPiece> this[PieceType pieceType, Color color] { get; }
