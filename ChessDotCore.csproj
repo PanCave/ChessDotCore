@@ -13,6 +13,9 @@
     <RepositoryUrl>https://github.com/PanCave/ChessDotCore</RepositoryUrl>
     <PackageIcon>Chess.png</PackageIcon>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.0.0</FileVersion>
+    <Version>1.1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

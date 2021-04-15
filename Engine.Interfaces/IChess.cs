@@ -4,11 +4,11 @@ namespace ChessDotCore.Engine.Interfaces
 {
   public interface IChess
   {
-    IGame CloneGame(string name);
-
     IGame CreateGame(string name);
 
     void DeleteGame(string name);
+
+    IGame ImportPgn(string filename);
 
     List<IGame> Games { get; }
   }
