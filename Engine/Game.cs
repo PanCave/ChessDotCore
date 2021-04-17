@@ -72,6 +72,7 @@ namespace ChessDotCore.Engine
               nextIsCheck,
               squares,
               nextMoveHistory);
+          UpdateGamestate();
           SetPiecesLists(board);
           List<IMove> legalMoves = engineUtilities.GetLegalMoves(board);
           board.LegalMoves = legalMoves;
@@ -276,6 +277,71 @@ namespace ChessDotCore.Engine
       Board = board;
     }
 
+    private void CheckForEndGame()
+    {
+      byte count = 0;
+
+      foreach (IPiece piece in Board[PieceType.Queen, Color.White, false])
+      {
+        count += 3;
+      }
+      foreach (IPiece piece in Board[PieceType.Queen, Color.Black, false])
+      {
+        count += 3;
+      }
+
+      foreach (IPiece piece in Board[PieceType.Bishop, Color.White, false])
+      {
+        count++;
+      }
+      foreach (IPiece piece in Board[PieceType.Bishop, Color.Black, false])
+      {
+        count++;
+      }
+
+      foreach (IPiece piece in Board[PieceType.Knight, Color.White, false])
+      {
+        count++;
+      }
+      foreach (IPiece piece in Board[PieceType.Knight, Color.Black, false])
+      {
+        count++;
+      }
+
+      foreach (IPiece piece in Board[PieceType.Rook, Color.White, false])
+      {
+        count += 2;
+      }
+      foreach (IPiece piece in Board[PieceType.Rook, Color.Black, false])
+      {
+        count += 2;
+      }
+
+      if (count > 14) (Board as Board).GameState = GameState.EndGame;
+    }
+
+    private void CheckForMiddleGame()
+    {
+      byte count = 0;
+      if (!Board.CanWhiteKingSideCastle) count++;
+      if (!Board.CanWhiteQueenSideCastle) count++;
+      if (!Board.CanBlackKingSideCastle) count++;
+      if (!Board.CanBlackQueenSideCastle) count++;
+
+      if (Board[0, 1].Piece.PieceType != PieceType.Knight) count += 2;
+      if (Board[0, 6].Piece.PieceType != PieceType.Knight) count += 2;
+      if (Board[0, 1].Piece.PieceType != PieceType.Bishop) count += 2;
+      if (Board[0, 6].Piece.PieceType != PieceType.Bishop) count += 2;
+      if (Board[0, 3].Piece.PieceType != PieceType.Queen) count += 3;
+      if (Board[7, 1].Piece.PieceType != PieceType.Knight) count += 2;
+      if (Board[7, 6].Piece.PieceType != PieceType.Knight) count += 2;
+      if (Board[7, 1].Piece.PieceType != PieceType.Bishop) count += 2;
+      if (Board[7, 6].Piece.PieceType != PieceType.Bishop) count += 2;
+      if (Board[7, 3].Piece.PieceType != PieceType.Queen) count += 3;
+
+      if (count > 18) (Board as Board).GameState = GameState.MiddleGame;
+    }
+
     private IBoard CreateNewBoard()
     {
       List<IPiece> pieces = engineUtilities.CreatePieces(squares);
@@ -351,6 +417,18 @@ namespace ChessDotCore.Engine
       board.BlackPawnList = b.BlackPawnList;
       board.BlackQueenList = b.BlackQueenList;
       board.BlackRookList = b.BlackRookList;
+    }
+
+    private void UpdateGamestate()
+    {
+      if (Board.GameState == GameState.Opening)
+      {
+        CheckForMiddleGame();
+      }
+      else if (Board.GameState == GameState.MiddleGame)
+      {
+        CheckForEndGame();
+      }
     }
 
     public IBoard Board { get; private set; }

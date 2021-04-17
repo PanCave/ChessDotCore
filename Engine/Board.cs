@@ -45,6 +45,7 @@ namespace ChessDotCore.Engine
       LegalRookMoves = new List<IMove>();
       LegalQueenMoves = new List<IMove>();
       LegalKingMoves = new List<IMove>();
+      GameState = GameState.Opening;
     }
 
     private string GetFen()
