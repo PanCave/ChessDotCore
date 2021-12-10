@@ -10,6 +10,8 @@ namespace ChessDotCore.Engine.Interfaces
 
     IGame ImportPgn(string filename);
 
+    IGame CreateGameFromFEN(string fen, string name);
+
     List<IGame> Games { get; }
   }
 }

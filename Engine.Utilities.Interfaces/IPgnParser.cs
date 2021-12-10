@@ -2,7 +2,7 @@
 
 namespace ChessDotCore.Engine.Utilities.Interfaces
 {
-  public interface IPgnParser
+  internal interface IPgnParser
   {
     IGame PgnToGame(string[] pgnContent);
   }

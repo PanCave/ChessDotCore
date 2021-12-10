@@ -3,7 +3,9 @@ using ChessDotCore.Engine.Utilities;
 using ChessDotCore.Engine.Utilities.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
+[assembly: InternalsVisibleTo("ChessDotCore.Tests")]
 namespace ChessDotCore.Engine
 {
   internal class Game : IGame
@@ -328,16 +330,16 @@ namespace ChessDotCore.Engine
       if (!Board.CanBlackKingSideCastle) count++;
       if (!Board.CanBlackQueenSideCastle) count++;
 
-      if (Board[0, 1].Piece.PieceType != PieceType.Knight) count += 2;
-      if (Board[0, 6].Piece.PieceType != PieceType.Knight) count += 2;
-      if (Board[0, 1].Piece.PieceType != PieceType.Bishop) count += 2;
-      if (Board[0, 6].Piece.PieceType != PieceType.Bishop) count += 2;
-      if (Board[0, 3].Piece.PieceType != PieceType.Queen) count += 3;
-      if (Board[7, 1].Piece.PieceType != PieceType.Knight) count += 2;
-      if (Board[7, 6].Piece.PieceType != PieceType.Knight) count += 2;
-      if (Board[7, 1].Piece.PieceType != PieceType.Bishop) count += 2;
-      if (Board[7, 6].Piece.PieceType != PieceType.Bishop) count += 2;
-      if (Board[7, 3].Piece.PieceType != PieceType.Queen) count += 3;
+      if (Board[0, 1].Piece?.PieceType != PieceType.Knight) count += 2;
+      if (Board[0, 6].Piece?.PieceType != PieceType.Knight) count += 2;
+      if (Board[0, 1].Piece?.PieceType != PieceType.Bishop) count += 2;
+      if (Board[0, 6].Piece?.PieceType != PieceType.Bishop) count += 2;
+      if (Board[0, 3].Piece?.PieceType != PieceType.Queen) count += 3;
+      if (Board[7, 1].Piece?.PieceType != PieceType.Knight) count += 2;
+      if (Board[7, 6].Piece?.PieceType != PieceType.Knight) count += 2;
+      if (Board[7, 1].Piece?.PieceType != PieceType.Bishop) count += 2;
+      if (Board[7, 6].Piece?.PieceType != PieceType.Bishop) count += 2;
+      if (Board[7, 3].Piece?.PieceType != PieceType.Queen) count += 3;
 
       if (count > 18) (Board as Board).GameState = GameState.MiddleGame;
     }

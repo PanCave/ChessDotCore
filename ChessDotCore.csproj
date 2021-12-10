@@ -19,9 +19,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Engine.Tests\**" />
-    <EmbeddedResource Remove="Engine.Tests\**" />
-    <None Remove="Engine.Tests\**" />
     <None Include="..\Chess.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>

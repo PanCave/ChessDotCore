@@ -38,6 +38,11 @@ namespace ChessDotCore.Engine
       return game;
     }
 
+    public IGame CreateGameFromFEN(string fen, string name)
+    {
+      throw new System.NotImplementedException();
+    }
+
     public List<IGame> Games { get; }
   }
 }
