@@ -149,7 +149,82 @@ namespace ChessDotCore.Engine.Utilities
 
     public string GameToFen(IGame game)
     {
-      throw new NotImplementedException();
+      string[] fen = new string[6];
+      StringBuilder sb = new StringBuilder();
+
+      #region Pieces
+      string[] piecesPart = new string[8];
+      for (int rank = 0; rank < 8; rank++)
+      {
+        int skip = 0;
+        for (int file = 0; file < 8; file++)
+        {
+          if (game.Board[rank, file] == null)
+            skip++;
+          else
+          {
+            if(skip > 0)
+            {
+              sb.Append(skip);
+              skip = 0;
+            }
+            sb.Append(game.Board[rank, file].Piece.PieceChar);
+          }
+        }
+
+        if (skip > 0)
+          sb.Append(skip);
+
+        piecesPart[rank] = sb.ToString();
+        sb.Clear();
+      }
+      fen[0] = string.Join('/', piecesPart);
+      #endregion
+
+      #region Turn
+      fen[1] = game.Board.Turn == Color.White ? "w" : "b";
+      #endregion
+
+      #region Castle rights
+      bool castleRightsExist = false;
+      if (game.Board.CanWhiteKingSideCastle)
+      {
+        sb.Append("K");
+        castleRightsExist = true;
+      }
+      if (game.Board.CanWhiteQueenSideCastle)
+      {
+        sb.Append("Q");
+        castleRightsExist = true;
+      }
+      if (game.Board.CanBlackKingSideCastle)
+      {
+        sb.Append("k");
+        castleRightsExist = true;
+      }
+      if (game.Board.CanBlackQueenSideCastle)
+      {
+        sb.Append("q");
+        castleRightsExist = true;
+      }
+
+      fen[2] = castleRightsExist ? sb.ToString() : "-";
+      sb.Clear();
+      #endregion
+
+      #region En-Passant square
+      fen[3] = game.Board.EnPassantSquare == null ? "-" : game.Board.EnPassantSquare.UciCode;
+      #endregion
+
+      #region Halfclock moves
+      fen[4] = game.Board.HalfTurnsSincePawnMovementOrCapture.ToString();
+      #endregion
+
+      #region Full move number
+      fen[5] = game.Board.TurnNumber.ToString();
+      #endregion
+
+      return string.Join(" ", fen);
     }
 
     public bool Validate(string fen)
