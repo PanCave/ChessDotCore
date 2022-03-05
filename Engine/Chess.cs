@@ -10,11 +10,17 @@ namespace ChessDotCore.Engine
   public class Chess : IChess
   {
     private readonly IPgnParser pgnParser;
+    private readonly IFenParser fenParser;
+    private readonly IEngineUtilities engineUtilities;
 
     public Chess()
     {
       Games = new List<IGame>();
+
+      engineUtilities = new EngineUtilities();
+
       pgnParser = new PgnParser();
+      fenParser = new FenParser(engineUtilities);
     }
 
     public IGame CreateGame(string name)
@@ -40,7 +46,9 @@ namespace ChessDotCore.Engine
 
     public IGame CreateGameFromFEN(string fen, string name)
     {
-      throw new System.NotImplementedException();
+      IGame game = fenParser.FenToGame(fen, name);
+      Games.Add(game);
+      return game;
     }
 
     public List<IGame> Games { get; }
