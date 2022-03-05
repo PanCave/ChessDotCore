@@ -29,6 +29,7 @@ namespace ChessDotCore.Engine.Interfaces
     Color Turn { get; }
     int TurnNumber { get; }
     IPiece WhiteKing { get; }
+    ISquare[,] Squares { get; }
     ISquare this[int rank, int file] { get; }
     List<IPiece> this[PieceType pieceType, Color color, bool alive] { get; }
     List<IPiece> this[PieceType pieceType, Color color] { get; }

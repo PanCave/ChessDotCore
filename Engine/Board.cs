@@ -154,6 +154,8 @@ namespace ChessDotCore.Engine
 
     internal List<IPiece> WhitePiecesList { get; set; }
 
+    public ISquare[,] Squares => squares;
+
     public ISquare this[int rank, int file]
     {
       get

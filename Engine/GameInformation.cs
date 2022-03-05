@@ -5,7 +5,14 @@ namespace ChessDotCore.Engine
 {
   internal class GameInformation : IGameInformation
   {
-    public GameInformation(string @event, string site, DateTime date, string round, string white, string black)
+    public GameInformation(
+      string @event = "Unknown Event",
+      string site = "Unknown Site",
+      DateTime date = new DateTime(),
+      string round = "Unknown Round",
+      string white = "Unknown Player",
+      string black = "Unknown Player"
+      )
     {
       Event = @event;
       Site = site;

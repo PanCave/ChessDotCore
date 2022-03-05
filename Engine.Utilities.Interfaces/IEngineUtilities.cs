@@ -22,6 +22,7 @@ namespace ChessDotCore.Engine.Utilities.Interfaces
     List<IMove> GetPseudoLegalMoves(IBoard board);
 
     bool IsCheck(IBoard board, Color turn);
+    bool IsCheck(List<IPiece> pieces, ISquare[,] squares, Color turn);
 
     bool IsCheckMate(IBoard board);
 

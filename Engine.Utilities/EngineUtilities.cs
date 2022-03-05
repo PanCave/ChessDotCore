@@ -194,9 +194,14 @@ namespace ChessDotCore.Engine.Utilities
 
     public bool IsCheck(IBoard board, Color turn)
     {
+      return IsCheck(board.Pieces, board.Squares, turn);
+    }
+
+    public bool IsCheck(List<IPiece> pieces, ISquare[,] squares, Color turn)
+    { 
       ISquare kingSquare = null;
       bool isCheck;
-      foreach (IPiece piece in board.Pieces)
+      foreach (IPiece piece in pieces)
       {
         if (piece.Square != null && piece.PieceType == PieceType.King && piece.Color == turn)
         {
@@ -204,10 +209,10 @@ namespace ChessDotCore.Engine.Utilities
         }
       }
 
-      isCheck = CheckPawnPutsInCheck(kingSquare, turn, board);
-      isCheck |= CheckBishopLikePutsInCheck(kingSquare, turn, board);
-      isCheck |= CheckRookLikePutsInCheck(kingSquare, turn, board);
-      isCheck |= CheckKnightPutsInCheck(kingSquare, turn, board);
+      isCheck = CheckPawnPutsInCheck(kingSquare, turn, squares);
+      isCheck |= CheckBishopLikePutsInCheck(kingSquare, turn, squares);
+      isCheck |= CheckRookLikePutsInCheck(kingSquare, turn, squares);
+      isCheck |= CheckKnightPutsInCheck(kingSquare, turn, squares);
 
       return isCheck;
     }
@@ -333,7 +338,11 @@ namespace ChessDotCore.Engine.Utilities
 
     private bool CheckBishopLikePutsInCheck(ISquare kingSquare, Color turn, IBoard board)
     {
-      int[] directionArray = new int[2] { -1, 1 };
+      return CheckBishopLikePutsInCheck(kingSquare, turn, board.Squares);
+    }
+    private bool CheckBishopLikePutsInCheck(ISquare kingSquare, Color turn, ISquare[,] squares)
+    {
+        int[] directionArray = new int[2] { -1, 1 };
       foreach (int direction in directionArray)
       {
         int offset;
@@ -341,7 +350,7 @@ namespace ChessDotCore.Engine.Utilities
         IPiece opponentPiece;
         for (offset = 1; offset < 8; offset++)
         {
-          opponentSquare = board[kingSquare.Rank + direction * offset, kingSquare.File + direction * offset];
+          opponentSquare = squares[kingSquare.Rank + direction * offset, kingSquare.File + direction * offset];
           if (opponentSquare != null)
           {
             opponentPiece = opponentSquare.Piece;
@@ -361,7 +370,7 @@ namespace ChessDotCore.Engine.Utilities
 
         for (offset = 1; offset < 8; offset++)
         {
-          opponentSquare = board[kingSquare.Rank + direction * offset, kingSquare.File - direction * offset];
+          opponentSquare = squares[kingSquare.Rank + direction * offset, kingSquare.File - direction * offset];
           if (opponentSquare != null)
           {
             opponentPiece = opponentSquare.Piece;
@@ -384,12 +393,16 @@ namespace ChessDotCore.Engine.Utilities
 
     private bool CheckKnightPutsInCheck(ISquare kingSquare, Color turn, IBoard board)
     {
+      return CheckKnightPutsInCheck(kingSquare, turn, board.Squares);
+    }
+    private bool CheckKnightPutsInCheck(ISquare kingSquare, Color turn, ISquare[,] squares)
+    {
       ISquare opponentSquare;
       IPiece opponentPiece;
       int[,] possibleMoves = new int[,] { { -1, 2 }, { -1, -2 }, { 1, 2 }, { 1, -2 }, { 2, 1 }, { 2, -1 }, { -2, -1 }, { -2, 1 } };
       for (int index = 0; index < possibleMoves.GetLength(0); index++)
       {
-        opponentSquare = board[kingSquare.Rank + possibleMoves[index, 0], kingSquare.File + possibleMoves[index, 1]];
+        opponentSquare = squares[kingSquare.Rank + possibleMoves[index, 0], kingSquare.File + possibleMoves[index, 1]];
         if (opponentSquare != null)
         {
           opponentPiece = opponentSquare.Piece;
@@ -403,18 +416,22 @@ namespace ChessDotCore.Engine.Utilities
 
     private bool CheckPawnPutsInCheck(ISquare kingSquare, Color kingColor, IBoard board)
     {
-      int direction = kingColor == Color.White ? 1 : -1;
+      return CheckPawnPutsInCheck(kingSquare, kingColor, board.Squares);
+    }
+    private bool CheckPawnPutsInCheck(ISquare kingSquare, Color kingColor, ISquare[,] squares)
+    {
+        int direction = kingColor == Color.White ? 1 : -1;
       bool isCheck = false;
       Color opponentColor = kingColor == Color.White ? Color.Black : Color.White;
 
-      ISquare leftSquare = board[kingSquare.Rank + direction, kingSquare.File + 1];
+      ISquare leftSquare = squares[kingSquare.Rank + direction, kingSquare.File + 1];
       if (leftSquare != null)
       {
         IPiece leftPiece = leftSquare.Piece;
         isCheck |= leftPiece?.PieceType == PieceType.Pawn && leftPiece?.Color == opponentColor;
       }
 
-      ISquare rightSquare = board[kingSquare.Rank + direction, kingSquare.File - 1];
+      ISquare rightSquare = squares[kingSquare.Rank + direction, kingSquare.File - 1];
       if (rightSquare != null)
       {
         IPiece rightPiece = rightSquare.Piece;
@@ -425,6 +442,10 @@ namespace ChessDotCore.Engine.Utilities
 
     private bool CheckRookLikePutsInCheck(ISquare kingSquare, Color turn, IBoard board)
     {
+      return CheckRookLikePutsInCheck(kingSquare, turn, board.Squares);
+    }
+    private bool CheckRookLikePutsInCheck(ISquare kingSquare, Color turn, ISquare[,] squares)
+    {
       int[] directionArray = new int[2] { -1, 1 };
       foreach (int direction in directionArray)
       {
@@ -433,7 +454,7 @@ namespace ChessDotCore.Engine.Utilities
         IPiece opponentPiece;
         for (offset = 1; offset < 8; offset++)
         {
-          opponentSquare = board[kingSquare.Rank + direction * offset, kingSquare.File];
+          opponentSquare = squares[kingSquare.Rank + direction * offset, kingSquare.File];
           if (opponentSquare != null)
           {
             opponentPiece = opponentSquare.Piece;
@@ -452,7 +473,7 @@ namespace ChessDotCore.Engine.Utilities
 
         for (offset = 1; offset < 8; offset++)
         {
-          opponentSquare = board[kingSquare.Rank, kingSquare.File - direction * offset];
+          opponentSquare = squares[kingSquare.Rank, kingSquare.File - direction * offset];
           if (opponentSquare != null)
           {
             opponentPiece = opponentSquare.Piece;
