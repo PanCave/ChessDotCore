@@ -7,7 +7,7 @@ namespace ChessDotCore.Engine.Utilities.Interfaces
 {
   internal interface IFenParser
   {
-    IGame FenToGame(string fen);
+    IGame FenToGame(string fen, string name);
     string GameToFen(IGame game);
     bool Validate(string fen);
   }

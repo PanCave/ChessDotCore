@@ -17,7 +17,7 @@ namespace ChessDotCore.Engine.Utilities
       this.engineUtilities = engineUtilities;
     }
 
-    public IGame FenToGame(string fen)
+    public IGame FenToGame(string fen, string name)
     {
       if (!Validate(fen)) return null;
 
@@ -141,7 +141,10 @@ namespace ChessDotCore.Engine.Utilities
         squares,
         new string[0] { }
         );
-      return new Game(board, $"Fen-Spiel_{DateTime.Now:dd.MM.yyyy_hh.mm.ss}");
+      return new Game(
+        board,
+        string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? $"Fen-Spiel_{DateTime.Now:dd.MM.yyyy_hh.mm.ss}" : name
+        );
     }
 
     public string GameToFen(IGame game)
