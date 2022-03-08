@@ -58,10 +58,24 @@ namespace ChessDotCore.Engine
         if (!isOneTimeMove)
         {
           Color nextTurn = Board.Turn == Color.White ? Color.Black : Color.White;
-          bool nextCanWhiteKingSideCastle = engineUtilities.CanWhiteStillKingSideCastle(move, Board);
-          bool nextCanWhiteQueenSideCastle = engineUtilities.CanWhiteStillQueenSideCastle(move, Board);
-          bool nextCanBlackKingSideCastle = engineUtilities.CanBlackStillKingSideCastle(move, Board);
-          bool nextCanBlackQueenSideCastle = engineUtilities.CanBlackStillQueenSideCastle(move, Board);
+          bool nextCanWhiteKingSideCastle;
+          bool nextCanWhiteQueenSideCastle;
+          bool nextCanBlackKingSideCastle;
+          bool nextCanBlackQueenSideCastle;
+          if (Board.Turn == Color.White)
+          {
+            nextCanWhiteKingSideCastle = engineUtilities.CanWhiteStillKingSideCastle(move, Board);
+            nextCanWhiteQueenSideCastle = engineUtilities.CanWhiteStillQueenSideCastle(move, Board);
+            nextCanBlackKingSideCastle = Board.CanBlackKingSideCastle;
+            nextCanBlackQueenSideCastle = Board.CanBlackQueenSideCastle;
+          }
+          else
+          {
+            nextCanWhiteKingSideCastle = Board.CanWhiteKingSideCastle;
+            nextCanWhiteQueenSideCastle = Board.CanWhiteQueenSideCastle;
+            nextCanBlackKingSideCastle = engineUtilities.CanBlackStillKingSideCastle(move, Board);
+            nextCanBlackQueenSideCastle = engineUtilities.CanBlackStillQueenSideCastle(move, Board);
+          }
           int nextHalfTurnsSincePawnMovementOrCapture = (move is CapturingMove || move.MovingPiece.PieceType == PieceType.Pawn) ? Board.HalfTurnsSincePawnMovementOrCapture + 1 : 0;
 
           bool nextIsCheck = engineUtilities.IsCheck(Board, nextTurn);
@@ -72,10 +86,10 @@ namespace ChessDotCore.Engine
           nextMoveHistory[len] = move.ToString();
 
           Board board = new Board(
-              nextCanWhiteKingSideCastle,
-              nextCanWhiteQueenSideCastle,
               nextCanBlackKingSideCastle,
               nextCanBlackQueenSideCastle,
+              nextCanWhiteKingSideCastle,
+              nextCanWhiteQueenSideCastle,
               (move is EnPassantEnablingMove m ? m.EnPassantSquare : null),
               nextHalfTurnsSincePawnMovementOrCapture,
               Board,

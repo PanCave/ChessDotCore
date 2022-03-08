@@ -38,12 +38,11 @@ namespace ChessDotCore.Engine.Utilities
         }
       }
 
-      file = 0;
+      rank = 7;
 
       foreach (string row in rows)
       {
-        rank = 0;
-
+        file = 0;
         foreach (char c in row)
         {
           if(char.IsLetter(c))
@@ -92,12 +91,12 @@ namespace ChessDotCore.Engine.Utilities
           }
           
         }
-        rank++;
+        rank--;
       }
       #endregion
 
       #region Turn
-      Color turn = fenParts[1].Equals('w') ? Color.White : Color.Black;
+      Color turn = fenParts[1].Equals("w") ? Color.White : Color.Black;
       #endregion
 
       #region Castle rights
@@ -141,6 +140,9 @@ namespace ChessDotCore.Engine.Utilities
         squares,
         new string[0] { }
         );
+      engineUtilities.CreatePiecesList(board as Board);
+      List<IMove> legalMoves = engineUtilities.GetLegalMoves(board as Board);
+      (board as Board).LegalMoves = legalMoves;
       return new Game(
         board,
         string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? $"Fen-Spiel_{DateTime.Now:dd.MM.yyyy_hh.mm.ss}" : name
@@ -154,12 +156,12 @@ namespace ChessDotCore.Engine.Utilities
 
       #region Pieces
       string[] piecesPart = new string[8];
-      for (int rank = 0; rank < 8; rank++)
+      for (int rank = 7; rank >= 0; rank--)
       {
         int skip = 0;
         for (int file = 0; file < 8; file++)
         {
-          if (game.Board[rank, file] == null)
+          if (game.Board[rank, file].Piece == null)
             skip++;
           else
           {
@@ -175,7 +177,7 @@ namespace ChessDotCore.Engine.Utilities
         if (skip > 0)
           sb.Append(skip);
 
-        piecesPart[rank] = sb.ToString();
+        piecesPart[7 - rank] = sb.ToString();
         sb.Clear();
       }
       fen[0] = string.Join('/', piecesPart);
