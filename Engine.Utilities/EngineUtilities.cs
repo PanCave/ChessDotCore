@@ -1381,6 +1381,7 @@ namespace ChessDotCore.Engine.Utilities
     private void TransformPseudoLegalMovesToLegalMoves(List<IMove> pseudoLegalMoves, Board board)
     {
       List<IMove> toBeRemovedMoves = new List<IMove>();
+      List<IMove> legalCapturingMoves = new List<IMove>();
       foreach (IMove move in pseudoLegalMoves)
       {
         if (move is CastlingMove)
@@ -1393,12 +1394,19 @@ namespace ChessDotCore.Engine.Utilities
           {
             int rank = move.ToSquare.Rank;
             int file = move.ToSquare.File == 6 ? 5 : 3;
-            bool kingCanMoveKingSide = true;
+            bool kingCanMoveSideways = true;
+            /** This only works, because King's 'normal stepping' moves
+             * are calculated BEFORE the castling moves.
+             * This however is okay, since this method only gets called
+             * by asking for legal moves and everything happens in one
+             * un-interrupted go. 
+             */
+
             foreach (IMove m in toBeRemovedMoves)
             {
-              if (m.ToSquare.Rank == rank && m.ToSquare.File == file) kingCanMoveKingSide = false;
+              if (m.ToSquare.Rank == rank && m.ToSquare.File == file) kingCanMoveSideways = false;
             }
-            if (!kingCanMoveKingSide) toBeRemovedMoves.Add(move);
+            if (!kingCanMoveSideways) toBeRemovedMoves.Add(move);
           }
         }
         MakeTheoMove(move, board);
@@ -1406,8 +1414,11 @@ namespace ChessDotCore.Engine.Utilities
         {
           toBeRemovedMoves.Add(move);
         }
+        else if (move is CapturingMove || move is EnPassantMove || move is CapturingPromotionMove)
+          legalCapturingMoves.Add(move);
         UndoMove(move, board);
       }
+      board.LegalCapturingMoves = legalCapturingMoves;
       foreach (IMove move in toBeRemovedMoves)
       {
         pseudoLegalMoves.Remove(move);

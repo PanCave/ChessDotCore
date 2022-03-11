@@ -45,6 +45,7 @@ namespace ChessDotCore.Engine
       LegalRookMoves = new List<IMove>();
       LegalQueenMoves = new List<IMove>();
       LegalKingMoves = new List<IMove>();
+      LegalCapturingMoves = new List<IMove>();
       GameState = GameState.Opening;
     }
 
@@ -131,6 +132,7 @@ namespace ChessDotCore.Engine
     public List<IMove> LegalPawnMoves { get; }
     public List<IMove> LegalQueenMoves { get; }
     public List<IMove> LegalRookMoves { get; }
+    public List<IMove> LegalCapturingMoves { get; internal set; }
     public List<IPiece> Pieces { get; }
 
     public Color Turn { get; }

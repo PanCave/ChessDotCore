@@ -21,6 +21,7 @@ namespace ChessDotCore.Engine.Interfaces
     List<IMove> LegalKingMoves { get; }
     List<IMove> LegalKnightMoves { get; }
     List<IMove> LegalMoves { get; }
+    List<IMove> LegalCapturingMoves { get; }
     List<IMove> LegalPawnMoves { get; }
     List<IMove> LegalQueenMoves { get; }
     List<IMove> LegalRookMoves { get; }
