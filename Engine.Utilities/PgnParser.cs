@@ -55,6 +55,8 @@ namespace ChessDotCore.Engine.Utilities
         if (game.Board.IsCheckMate || game.Board.IsDraw) break;
       }
 
+      (game as Game).InitGamestate();
+
       return game;
     }
 

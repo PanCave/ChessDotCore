@@ -459,6 +459,13 @@ namespace ChessDotCore.Engine
       }
     }
 
+    internal void InitGamestate()
+    {
+      if (Board.GameState == GameState.Opening)
+        CheckForMiddleGame();
+      if (Board.GameState == GameState.MiddleGame)
+        CheckForEndGame();
+    }
     public IBoard Board { get; private set; }
 
     public IGameInformation GameInformation { get; }

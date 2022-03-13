@@ -143,10 +143,12 @@ namespace ChessDotCore.Engine.Utilities
       engineUtilities.CreatePiecesList(board as Board);
       List<IMove> legalMoves = engineUtilities.GetLegalMoves(board as Board);
       (board as Board).LegalMoves = legalMoves;
-      return new Game(
+      Game game = new Game(
         board,
         string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name) ? $"Fen-Spiel_{DateTime.Now:dd.MM.yyyy_hh.mm.ss}" : name
         );
+      game.InitGamestate();
+      return game;
     }
 
     public string GameToFen(IGame game)
