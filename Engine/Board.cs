@@ -121,6 +121,7 @@ namespace ChessDotCore.Engine
     public bool IsDraw => HalfTurnsSincePawnMovementOrCapture >= 50;
 
     public IBoard LastBoard { get; }
+    public IBoard NextBoard { get; internal set; }
 
     public IMove LastMove { get; }
 

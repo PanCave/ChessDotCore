@@ -10,6 +10,8 @@
 
     IGame Clone();
 
+    IBoard this[int halfTurnClock] { get; }
+
     bool Move(IMove[] moves);
 
     bool Move(string[] uciStrings);
@@ -19,5 +21,7 @@
     bool MoveFromUCI(string uciString);
 
     void UndoMove();
+    void Next();
+    void Previous();
   }
 }

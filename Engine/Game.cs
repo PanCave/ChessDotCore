@@ -13,6 +13,8 @@ namespace ChessDotCore.Engine
     private readonly IEngineUtilities engineUtilities;
     private readonly ISquare[,] squares;
 
+    private readonly IBoard initialBoard;
+
     public Game(
       string name,
       string @event = "Unknown Event",
@@ -28,6 +30,7 @@ namespace ChessDotCore.Engine
       squares = new Square[8, 8];
       FillSquares();
       Board = CreateNewBoard();
+      initialBoard = Board;
       GameInformation = new GameInformation(@event, site, date, round, white, black);
     }
 
@@ -105,6 +108,7 @@ namespace ChessDotCore.Engine
           List<IMove> legalMoves = engineUtilities.GetLegalMoves(board);
           board.LegalMoves = legalMoves;
           board.IsCheckMate = legalMoves.Count == 0;
+          (Board as Board).NextBoard = board;
           Board = board;
         }
         else
@@ -258,6 +262,7 @@ namespace ChessDotCore.Engine
         engineUtilities.UndoMove(Board.LastMove, (Board as Board));
         Board = (Board as Board).LastBoard;
       }
+      (Board as Board).NextBoard = null;
     }
 
     internal void CopyBoard(IBoard copyBoard)
@@ -466,9 +471,54 @@ namespace ChessDotCore.Engine
       if (Board.GameState == GameState.MiddleGame)
         CheckForEndGame();
     }
+
+    public void Next()
+    {
+      try
+      {
+        Board = (Board as Board).NextBoard;
+      }
+      catch(NullReferenceException)
+      {
+
+      }
+    }
+
+    public void Previous()
+    {
+      try
+      {
+        Board = (Board as Board).LastBoard;
+      }
+      catch (NullReferenceException)
+      {
+
+      }
+    }
+
     public IBoard Board { get; private set; }
 
     public IGameInformation GameInformation { get; }
     public string Name { get; }
+
+    public IBoard this[int halfTurnClock]
+    {
+      get
+      {
+        try
+        {
+          IBoard board = initialBoard;
+          for (int i = 0; i < halfTurnClock; i++)
+          {
+            board = (board as Board).NextBoard;
+          }
+          return board;
+        }
+        catch(NullReferenceException)
+        {
+          return null;
+        }
+      }
+    }
   }
 }
